@@ -1,0 +1,300 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.5
+-- Dumped by pg_dump version 17.5
+
+-- Started on 2025-06-16 20:36:12
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 222 (class 1259 OID 16421)
+-- Name: reservas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.reservas (
+    id integer NOT NULL,
+    usuario_id integer,
+    servico_id integer,
+    data_agendamento date NOT NULL,
+    quantidade_pessoas integer NOT NULL,
+    quantidade_criancas integer DEFAULT 0,
+    quantidade_bariatricos integer DEFAULT 0
+);
+
+
+ALTER TABLE public.reservas OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 16420)
+-- Name: reservas_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.reservas_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.reservas_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4921 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: reservas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.reservas_id_seq OWNED BY public.reservas.id;
+
+
+--
+-- TOC entry 220 (class 1259 OID 16414)
+-- Name: servicos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.servicos (
+    id integer NOT NULL,
+    nome character varying(50) NOT NULL,
+    valor numeric(10,2) NOT NULL,
+    capacidade_maxima integer,
+    horarios_fixos time without time zone[],
+    horario_inicio_diario time without time zone,
+    horario_fim_diario time without time zone
+);
+
+
+ALTER TABLE public.servicos OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 16413)
+-- Name: servicos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.servicos_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.servicos_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4924 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: servicos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.servicos_id_seq OWNED BY public.servicos.id;
+
+
+--
+-- TOC entry 218 (class 1259 OID 16402)
+-- Name: usuarios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.usuarios (
+    id integer NOT NULL,
+    nome character varying(100) NOT NULL,
+    cpf character(11) NOT NULL,
+    email character varying(100) NOT NULL,
+    telefone character varying(20) NOT NULL,
+    is_admin boolean DEFAULT false
+);
+
+
+ALTER TABLE public.usuarios OWNER TO postgres;
+
+--
+-- TOC entry 217 (class 1259 OID 16401)
+-- Name: usuarios_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.usuarios_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.usuarios_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 4927 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: usuarios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.usuarios_id_seq OWNED BY public.usuarios.id;
+
+
+--
+-- TOC entry 4755 (class 2604 OID 16424)
+-- Name: reservas id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reservas ALTER COLUMN id SET DEFAULT nextval('public.reservas_id_seq'::regclass);
+
+
+--
+-- TOC entry 4754 (class 2604 OID 16417)
+-- Name: servicos id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.servicos ALTER COLUMN id SET DEFAULT nextval('public.servicos_id_seq'::regclass);
+
+
+--
+-- TOC entry 4752 (class 2604 OID 16405)
+-- Name: usuarios id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios ALTER COLUMN id SET DEFAULT nextval('public.usuarios_id_seq'::regclass);
+
+
+--
+-- TOC entry 4767 (class 2606 OID 16428)
+-- Name: reservas reservas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reservas
+    ADD CONSTRAINT reservas_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4765 (class 2606 OID 16419)
+-- Name: servicos servicos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.servicos
+    ADD CONSTRAINT servicos_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4759 (class 2606 OID 16409)
+-- Name: usuarios usuarios_cpf_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_cpf_key UNIQUE (cpf);
+
+
+--
+-- TOC entry 4761 (class 2606 OID 16411)
+-- Name: usuarios usuarios_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_email_key UNIQUE (email);
+
+
+--
+-- TOC entry 4763 (class 2606 OID 16407)
+-- Name: usuarios usuarios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuarios
+    ADD CONSTRAINT usuarios_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4768 (class 2606 OID 16434)
+-- Name: reservas reservas_servico_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reservas
+    ADD CONSTRAINT reservas_servico_id_fkey FOREIGN KEY (servico_id) REFERENCES public.servicos(id);
+
+
+--
+-- TOC entry 4769 (class 2606 OID 16429)
+-- Name: reservas reservas_usuario_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reservas
+    ADD CONSTRAINT reservas_usuario_id_fkey FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id);
+
+
+--
+-- TOC entry 4920 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: TABLE reservas; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.reservas TO app_user;
+
+
+--
+-- TOC entry 4922 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: SEQUENCE reservas_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,USAGE ON SEQUENCE public.reservas_id_seq TO app_user;
+
+
+--
+-- TOC entry 4923 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: TABLE servicos; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.servicos TO app_user;
+
+
+--
+-- TOC entry 4925 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: SEQUENCE servicos_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,USAGE ON SEQUENCE public.servicos_id_seq TO app_user;
+
+
+--
+-- TOC entry 4926 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: TABLE usuarios; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.usuarios TO app_user;
+
+
+--
+-- TOC entry 4928 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: SEQUENCE usuarios_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,USAGE ON SEQUENCE public.usuarios_id_seq TO app_user;
+
+
+-- Completed on 2025-06-16 20:36:12
+
+--
+-- PostgreSQL database dump complete
+--
+
